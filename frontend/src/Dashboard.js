@@ -50,7 +50,7 @@ export default function CareerFlowTracker({ logout }) {
 
   const fetchJobs = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/jobs');
+      const res = await axios.get('https://careerflow-hjxb.onrender.com/jobs');
       setJobs(res.data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
@@ -61,7 +61,7 @@ export default function CareerFlowTracker({ logout }) {
     setLoadingLive(true);
     setLiveError(false);
     try {
-      const res = await axios.get('http://localhost:5000/api/recommendations');
+      const res = await axios.get('https://careerflow-hjxb.onrender.com/api/recommendations');
       setLiveJobs(res.data);
     } catch (error) {
       console.error("Error fetching live jobs:", error);
@@ -73,7 +73,7 @@ export default function CareerFlowTracker({ logout }) {
   const handleAddJob = async () => {
     if (newJob.company && newJob.position) {
       try {
-        await axios.post('http://localhost:5000/jobs', newJob);
+        await axios.post('https://careerflow-hjxb.onrender.com/jobs', newJob);
         setShowAddModal(false);
         setNewJob(initialFormState);
         fetchJobs(); 
@@ -89,7 +89,7 @@ export default function CareerFlowTracker({ logout }) {
     try {
         setJobs(jobs.filter(job => job._id !== id));
         setSelectedJob(null);
-        await axios.delete(`http://localhost:5000/jobs/${id}`);
+        await axios.delete(`https://careerflow-hjxb.onrender.com/jobs/${id}`);
         fetchJobs();
     } catch (error) {
         console.error("Error deleting", error);
@@ -98,7 +98,7 @@ export default function CareerFlowTracker({ logout }) {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-        await axios.put(`http://localhost:5000/jobs/${id}`, { status: newStatus });
+        await axios.put(`https://careerflow-hjxb.onrender.com/jobs/${id}`, { status: newStatus });
         fetchJobs();
         if(selectedJob) setSelectedJob({...selectedJob, status: newStatus});
     } catch (error) {

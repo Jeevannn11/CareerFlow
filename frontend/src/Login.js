@@ -13,7 +13,7 @@ const handleSubmit = async (e) => {
     setError('');
     const endpoint = isLogin ? 'login' : 'register';
     try {
-      const res = await axios.post(`http://localhost:5000/${endpoint}`, { username, password });
+      const res = await axios.post(`https://careerflow-hjxb.onrender.com/${endpoint}`, { username, password });
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);
       
