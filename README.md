@@ -1,70 +1,89 @@
-# Getting Started with Create React App
+# 🚀 CareerFlow - Intelligent Job Application Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**CareerFlow** is a comprehensive **Application Lifecycle Management (ALM)** platform engineered to streamline the job search process for developers. It replaces chaotic spreadsheets with a centralized, data-driven dashboard featuring a **Kanban pipeline**, **real-time analytics**, and an **integrated job discovery engine**.
 
-## Available Scripts
+![Status](https://img.shields.io/badge/Stack-MERN-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Auth-JWT-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Production-orange?style=for-the-badge)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📸 Application Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### **1. Intelligent Pipeline Management**
+A drag-and-drop style Kanban board to track applications through every stage: *Applied* → *Online Test* → *Interview* → *Offer*.
+![Pipeline Dashboard](screenshots/pipeline.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### **2. Performance Analytics**
+Visualizes your job search health with real-time charts. Tracks **Interview Rates**, **Success Ratios**, and **Activity Velocity** to help you optimize your strategy.
+![Analytics Dashboard](screenshots/analytics.png)
 
-### `npm test`
+### **3. Live Job Market & Discovery**
+An integrated feed that aggregates **real-time developer opportunities** from the RemoteOK API. Users can instantly import these jobs into their personal pipeline with one click.
+![Job Discovery](screenshots/discovery.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🌟 Key Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **🔐 Secure Authentication:** Enterprise-grade login system using **JWT (JSON Web Tokens)** and **Bcrypt** hashing. Each user gets a private, isolated dashboard.
+- **📊 Interactive Data Visualization:** Built with `Recharts` to transform raw application data into actionable insights (Donut Charts, Funnels).
+- **📅 Smart Scheduling:** Integrated calendar system that automatically highlights upcoming interviews and Online Assessment (OA) deadlines.
+- **🤖 Automated Data Entry:** "One-Click Add" feature populates job forms automatically when selecting roles from the Discovery feed.
+- **📱 Responsive Glassmorphism UI:** A modern, aesthetic interface built with **Tailwind CSS** focusing on usability and focus.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🛠️ Tech Stack
 
-### `npm run eject`
+| Domain | Technology Used |
+| :--- | :--- |
+| **Frontend** | React.js, Tailwind CSS, Lucide React, Recharts |
+| **Backend** | Node.js, Express.js (REST API) |
+| **Database** | MongoDB Atlas (Cloud-Native NoSQL) |
+| **Security** | JWT (Session Management), Bcrypt (Encryption) |
+| **Integrations** | Axios, RemoteOK API, Jobicy API |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📦 Installation & Local Setup
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Follow these steps to run the complete suite locally.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/Jeevannn11/CareerFlow.git](https://github.com/Jeevannn11/CareerFlow.git)
+cd CareerFlow
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2. Backend Setup (The Brain)
+Navigate to the backend folder and install dependencies:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Bash
 
-### Code Splitting
+cd backend
+npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+3. Frontend Setup (The Interface)
+Open a new terminal and navigate to the frontend:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Bash
 
-### Making a Progressive Web App
+cd ../frontend
+npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+🚀 Live Deployment
+This project is deployed on enterprise-grade cloud infrastructure:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Backend API: Hosted on Render
 
-### Deployment
+Frontend UI: Hosted on Vercel
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+👤 Author
+Jeevan Tadwal
 
-### `npm run build` fails to minify
+Full Stack Developer & AI Engineer
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+GitHub | LinkedIn
