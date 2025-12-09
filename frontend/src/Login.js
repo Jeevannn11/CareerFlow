@@ -8,7 +8,7 @@ export default function Login({ setToken }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     const endpoint = isLogin ? 'login' : 'register';
@@ -16,6 +16,11 @@ export default function Login({ setToken }) {
       const res = await axios.post(`http://localhost:5000/${endpoint}`, { username, password });
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);
+      
+      // --- NEW LINE: Save the username so we can show it later ---
+      localStorage.setItem('careerFlowUser', res.data.user.username); 
+      // -----------------------------------------------------------
+      
     } catch (err) {
       setError(err.response?.data?.msg || 'Something went wrong');
     }

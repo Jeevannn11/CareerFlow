@@ -3,19 +3,20 @@ import axios from 'axios';
 import { 
   Plus, Briefcase, TrendingUp, Search, Clock, MapPin, 
   DollarSign, ExternalLink, Trash2, BarChart2, Folder, 
-  Globe, User, AlertCircle, RefreshCw, Calendar as CalendarIcon, Activity 
+  Globe, User, AlertCircle, RefreshCw, CheckCircle, 
+  XCircle, Calendar as CalendarIcon, Activity 
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  Cell 
+  Cell, PieChart, Pie, Legend
 } from 'recharts';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './index.css';
 
-export default function Dashboard({ logout }) {
+export default function CareerFlowTracker({ logout }) {
   const [jobs, setJobs] = useState([]);
-  const [activeView, setActiveView] = useState('analytics'); 
+  const [activeView, setActiveView] = useState('analytics'); // Default view
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedJob, setSelectedJob] = useState(null);
@@ -130,20 +131,19 @@ export default function Dashboard({ logout }) {
     fill: s.color
   }));
 
+  const pieData = funnelData.filter(d => d.count > 0);
+
   const totalApps = jobs.length;
+  const offerCount = getStatusCount('offer');
+  const rejectedCount = getStatusCount('rejected');
+  
   const interviewRate = totalApps > 0 
-    ? (((getStatusCount('interview') + getStatusCount('offer')) / totalApps) * 100).toFixed(1) 
+    ? (((getStatusCount('interview') + offerCount) / totalApps) * 100).toFixed(0) 
     : 0;
   
-  // --- UPDATED RECENT ACTIVITY LOGIC ---
-  // Sort by 'updatedAt' if available, otherwise 'appliedDate'
-  // This ensures that newly edited/moved jobs float to the top!
+  // Recent Activity (Sort by Updated Date so changes float to top)
   const recentActivity = [...jobs]
-    .sort((a, b) => {
-        const dateA = new Date(a.updatedAt || a.appliedDate);
-        const dateB = new Date(b.updatedAt || b.appliedDate);
-        return dateB - dateA;
-    })
+    .sort((a, b) => new Date(b.updatedAt || b.appliedDate) - new Date(a.updatedAt || a.appliedDate))
     .slice(0, 5);
 
   // --- CALENDAR LOGIC ---
@@ -177,7 +177,7 @@ export default function Dashboard({ logout }) {
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 flex flex-col">
           <button onClick={() => setActiveView('pipeline')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeView === 'pipeline' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'}`}>
             <Folder size={18} /> Pipeline
           </button>
@@ -187,9 +187,15 @@ export default function Dashboard({ logout }) {
           <button onClick={() => setActiveView('discovery')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeView === 'discovery' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'}`}>
             <Globe size={18} /> Job Discovery
           </button>
-          <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-500 hover:bg-slate-50 transition-colors mt-auto">
-            <ExternalLink size={18} /> Logout
-          </button>
+
+          <div className="mt-auto pt-4">
+             <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                User: {localStorage.getItem('careerFlowUser') || 'Guest'}
+             </p>
+             <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-500 hover:bg-slate-50 transition-colors">
+                <ExternalLink size={18} /> Logout
+             </button>
+          </div>
         </nav>
 
         {/* CALENDAR */}
@@ -209,10 +215,10 @@ export default function Dashboard({ logout }) {
 
         <div className="p-4 border-t border-slate-200">
           <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-50 border border-slate-100">
-            <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold">JT</div>
+            <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold uppercase">JT</div>
             <div className="flex-1">
               <p className="text-sm font-bold text-slate-900">Jeevan Tadwal</p>
-              <p className="text-xs text-slate-500">Full Stack Dev</p>
+              <p className="text-xs text-slate-500">Admin</p>
             </div>
           </div>
         </div>
@@ -244,49 +250,84 @@ export default function Dashboard({ logout }) {
             )}
         </div>
 
-        {/* --- VIEW: ANALYTICS (FIXED: NOW UPDATES ON CHANGE) --- */}
+        {/* --- VIEW: ANALYTICS (RESTORED TO ANLYSIS01.PNG DESIGN) --- */}
         {activeView === 'analytics' && (
           <div className="p-8 overflow-y-auto h-full pb-20">
-            {/* Top Cards Row */}
+            
+            {/* 1. TOP ROW: 4 KPI CARDS */}
+            <div className="grid grid-cols-4 gap-6 mb-8">
+                {/* Total */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+                    <div className="flex justify-between items-start">
+                        <div className="p-2 bg-blue-50 rounded-lg"><Briefcase className="text-blue-600 w-5 h-5"/></div>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total</span>
+                    </div>
+                    <div><h3 className="text-3xl font-bold text-slate-900">{totalApps}</h3><p className="text-xs text-slate-500">Applications</p></div>
+                </div>
+                {/* Response Rate */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+                    <div className="flex justify-between items-start">
+                        <div className="p-2 bg-purple-50 rounded-lg"><TrendingUp className="text-purple-600 w-5 h-5"/></div>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Response</span>
+                    </div>
+                    <div><h3 className="text-3xl font-bold text-slate-900">{interviewRate}%</h3><p className="text-xs text-slate-500">Interview Rate</p></div>
+                </div>
+                {/* Success */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+                    <div className="flex justify-between items-start">
+                        <div className="p-2 bg-green-50 rounded-lg"><CheckCircle className="text-green-600 w-5 h-5"/></div>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Success</span>
+                    </div>
+                    <div><h3 className="text-3xl font-bold text-slate-900">{offerCount}</h3><p className="text-xs text-slate-500">Offers Received</p></div>
+                </div>
+                {/* Rejected */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+                    <div className="flex justify-between items-start">
+                        <div className="p-2 bg-red-50 rounded-lg"><XCircle className="text-red-600 w-5 h-5"/></div>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Rejected</span>
+                    </div>
+                    <div><h3 className="text-3xl font-bold text-slate-900">{rejectedCount}</h3><p className="text-xs text-slate-500">Keep Going!</p></div>
+                </div>
+            </div>
+
+            {/* 2. MIDDLE ROW: PIE CHART + BAR CHART */}
             <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between h-40">
-                    <div>
-                        <div className="p-3 bg-blue-50 rounded-xl w-fit mb-4"><Briefcase className="text-blue-600 w-8 h-8"/></div>
-                        <h3 className="text-4xl font-bold text-slate-900">{totalApps}</h3>
+                {/* Donut Chart */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Pipeline Distribution</h3>
+                    <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie data={pieData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="count">
+                                    {pieData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.fill} />))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
                     </div>
-                    <span className="text-sm font-bold text-slate-400 uppercase tracking-wider self-start mt-2">Total Apps</span>
                 </div>
 
-                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between h-40">
-                    <div>
-                        <div className="p-3 bg-purple-50 rounded-xl w-fit mb-4"><TrendingUp className="text-purple-600 w-8 h-8"/></div>
-                        <h3 className="text-4xl font-bold text-slate-900">{interviewRate}%</h3>
+                {/* Horizontal Bar Chart */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Status Breakdown</h3>
+                    <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={funnelData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                                <XAxis type="number" />
+                                <YAxis dataKey="name" type="category" width={100} tick={{fill: '#64748b', fontSize: 12}} />
+                                <Tooltip cursor={{fill: '#f1f5f9'}} />
+                                <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
+                                    {funnelData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.fill} />))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
-                    <span className="text-sm font-bold text-slate-400 uppercase tracking-wider self-start mt-2">Interview Rate</span>
                 </div>
             </div>
 
-            {/* Bottom Chart: Application Status */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-8">Application Status</h3>
-                <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={funnelData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                            <XAxis type="number" />
-                            <YAxis dataKey="name" type="category" width={100} tick={{fill: '#64748b', fontSize: 14}} />
-                            <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                            <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={40}>
-                                {funnelData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-            </div>
-
-            {/* --- RECENT ACTIVITY (NOW CONNECTED TO LIVE UPDATES) --- */}
+            {/* 3. BOTTOM ROW: RECENT ACTIVITY */}
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-2 mb-6">
                     <Activity className="text-indigo-600 w-5 h-5" />
@@ -314,17 +355,17 @@ export default function Dashboard({ logout }) {
                                     </span>
                                     <div className="flex items-center gap-1 text-xs text-slate-400 mt-1 justify-end">
                                         <Clock size={10} />
-                                        {/* Shows Updated Date if available, else Applied Date */}
                                         {new Date(job.updatedAt || job.appliedDate).toLocaleDateString()}
                                     </div>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p className="text-slate-400 text-sm text-center py-4">No recent activity found.</p>
+                        <p className="text-slate-400 text-sm text-center py-4">No recent activity found. Add a job to start tracking!</p>
                     )}
                 </div>
             </div>
+
           </div>
         )}
 
@@ -412,7 +453,7 @@ export default function Dashboard({ logout }) {
         )}
       </div>
 
-      {/* MODALS SECTION */}
+      {/* MODALS */}
       {selectedJob && (
         <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/20 backdrop-blur-[1px]" onClick={() => setSelectedJob(null)}>
             <div className="w-[500px] bg-white h-full shadow-2xl p-8 overflow-y-auto border-l border-slate-200" onClick={(e) => e.stopPropagation()}>
@@ -446,7 +487,6 @@ export default function Dashboard({ logout }) {
         </div>
       )}
 
-      {/* ADD JOB MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -472,7 +512,6 @@ export default function Dashboard({ logout }) {
                 <div><label className="block text-sm font-semibold text-slate-700 mb-2">Applied Date</label><input type="date" value={newJob.appliedDate} onChange={(e) => setNewJob({ ...newJob, appliedDate: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-lg" /></div>
                 <div><label className="block text-sm font-semibold text-slate-700 mb-2">Deadline</label><input type="date" value={newJob.deadline} onChange={(e) => setNewJob({ ...newJob, deadline: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-lg" /></div>
               </div>
-              {/* SCHEDULE INTERVIEW FIELD */}
               <div><label className="block text-sm font-semibold text-indigo-600 mb-2">Schedule Next Round</label><input type="date" value={newJob.nextRoundDate} onChange={(e) => setNewJob({ ...newJob, nextRoundDate: e.target.value })} className="w-full px-4 py-2.5 border border-indigo-200 bg-indigo-50 rounded-lg" /></div>
               <div><label className="block text-sm font-semibold text-slate-700 mb-2">Notes</label><textarea value={newJob.notes} onChange={(e) => setNewJob({ ...newJob, notes: e.target.value })} rows="3" className="w-full px-4 py-2.5 border border-slate-200 rounded-lg" placeholder="Notes..."></textarea></div>
               <div className="flex gap-4 pt-4 border-t border-slate-100">
